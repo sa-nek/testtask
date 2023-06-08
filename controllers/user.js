@@ -30,13 +30,15 @@ const changeBossForEmployee = async (req, res) => {
   try {
     const userData = req.userData;
     if (userData?.role !== "boss") {
-      return res.status(401).json("You aren`t allowed to use this route");
+      return res
+        .status(401)
+        .json({ message: "You aren`t allowed to use this route" });
     }
 
     const { employeeId, newBossId } = req.body;
 
     if (!employeeId || !newBossId || newBossId === userData.id) {
-      return res.status(400).json("Incorrect data provided");
+      return res.status(400).json({ message: "Incorrect data provided" });
     }
     const bossEmployees = await getBossAndEmployees(userData.id);
     const isBossEmployee = Boolean(
@@ -44,7 +46,7 @@ const changeBossForEmployee = async (req, res) => {
     );
 
     if (!isBossEmployee) {
-      return res.status(400).json("It isn`t your employee");
+      return res.status(400).json({ message: "It isn`t your employee" });
     }
 
     const newBoss = await Boss.findOne({
@@ -52,7 +54,7 @@ const changeBossForEmployee = async (req, res) => {
     });
 
     if (!newBoss) {
-      return res.status(400).json("Incorrect boss id");
+      return res.status(400).json({ message: "Incorrect boss id" });
     }
 
     await Employee.update(
